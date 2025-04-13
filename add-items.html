@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Items - Cosem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Include the sidebar styles from dashboard.html -->
+    <style>
+        /* Sidebar styles from dashboard.html */
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+            width: 64px;
+            position: fixed;
+            height: 100vh;
+            z-index: 50;
+        }
+        .sidebar:hover {
+            width: 256px;
+        }
+        .sidebar .nav-text {
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .sidebar:hover .nav-text {
+            opacity: 1;
+        }
+        .nav-item {
+            width: 100%;
+            white-space: nowrap;
+        }
+        .icon-container {
+            min-width: 40px;
+            width: 40px;
+            height: 40px;
+        }
+        
+        /* Table styles */
+        .table-container {
+            max-height: calc(100vh - 300px);
+            overflow: hidden;
+        }
+        
+        /* Responsive table */
+        .table-wrapper {
+            position: relative;
+            margin: 0 -1.5rem;  /* Negative margin to counter parent padding */
+            padding: 0 1.5rem;  /* Add padding back */
+            width: calc(100% + 3rem);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Table scroll container */
+        .table-scroll {
+            min-width: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: calc(100vh - 300px);
+        }
+        
+        /* Minimum column widths */
+        .min-w-column {
+            min-width: 150px;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* First column (sl_no) fixed width */
+        .fixed-column {
+            min-width: 80px;
+            max-width: 80px;
+            position: sticky;
+            left: 0;
+            background-color: white;
+            z-index: 1;
+        }
+        
+        /* Sticky header */
+        .sticky-header th {
+            position: sticky;
+            top: 0;
+            background-color: #f9fafb;
+            z-index: 10;
+        }
+        
+        /* Make sl_no header sticky and above other headers */
+        .sticky-header th.fixed-column {
+            z-index: 11;
+            left: 0;
+        }
+        
+        /* Custom scrollbar */
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Formula help modal */
+        .formula-help {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        /* Main content layout */
+        .main-content {
+            margin-left: 64px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            width: calc(100vw - 64px);
+            overflow-x: hidden;
+        }
+        
+        .content-wrapper {
+            flex: 1;
+            padding: 1.5rem;
+            overflow: hidden;
+        }
+
+        /* Search highlight */
+        .header-row.highlight {
+            background-color: #f3f4f6;
+        }
+
+        /* Search input */
+        #headerSearch:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Include the sidebar from dashboard.html -->
+        <div class="sidebar bg-gradient-to-b from-indigo-900 to-indigo-800 text-white py-6 flex flex-col fixed h-screen z-50 overflow-hidden shadow-xl">
+            <div class="px-4 mb-8 flex items-center">
+                <i class="fas fa-tint text-2xl text-blue-400"></i>
+                <span class="nav-text ml-3 text-xl font-bold">Cosem</span>
+            </div>
+            <nav class="flex-1">
+                <ul class="space-y-2 px-2">
+                    <li>
+                        <a href="dashboard.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-home text-blue-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#projects" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-project-diagram text-green-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Projects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="new-project.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-plus text-yellow-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">New Project</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="add-items.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-boxes text-purple-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Add Items</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="price-list.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-tags text-pink-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Price List</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="px-2 mt-auto">
+                <button onclick="logout()" class="nav-item flex items-center px-2 py-2 text-red-300 hover:bg-red-900 hover:text-red-100 rounded-lg transition-colors group">
+                    <div class="icon-container flex items-center justify-center bg-red-900/50 rounded-lg group-hover:bg-red-800">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                    <span class="nav-text ml-3">Logout</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content w-full">
+            <!-- Top Navigation Bar -->
+            <div class="bg-white shadow-md sticky top-0 z-20">
+                <div class="max-w-full mx-auto px-6 py-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-4">
+                            <h1 class="text-xl font-semibold text-gray-800">
+                                <i class="fas fa-boxes text-indigo-600 mr-2"></i>
+                                Add Items
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Wrapper -->
+            <div class="content-wrapper">
+                <!-- Add New Item Section -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6">Add New Item</h2>
+                    
+                    <form id="addItemForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Select Category
+                                </label>
+                                <div class="flex space-x-2">
+                                    <select id="categorySelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="">Select a category</option>
+                                    </select>
+                                    <button type="button" id="createCategory" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="dynamicFields" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Dynamic fields will be added here based on category selection -->
+                        </div>
+
+                        <div class="flex justify-end space-x-4">
+                            <button type="button" id="showFormulaHelp" class="px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                                Show Formula Help
+                            </button>
+                            <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                Save Item
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Formula Help Modal -->
+                    <div id="formulaHelpModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                        <div class="relative top-20 mx-auto p-5 border w-[600px] shadow-lg rounded-md bg-white">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold">Formula Help</h3>
+                                <button id="closeFormulaHelp" class="text-gray-500 hover:text-gray-700">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="formula-help">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Label</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Key</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="formulaHelpContent" class="bg-white divide-y divide-gray-200">
+                                        <!-- Will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Existing Items Section -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800">Edit Items</h2>
+                        <div class="flex space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <select id="exportCategory" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="">Export Category...</option>
+                                </select>
+                                <button id="exportCategoryExcel" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center">
+                                    <i class="fas fa-file-excel mr-2"></i>
+                                    Excel
+                                </button>
+                                <button id="exportCategoryPdf" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center">
+                                    <i class="fas fa-file-pdf mr-2"></i>
+                                    PDF
+                                </button>
+                            </div>
+                            <div class="border-l border-gray-300 mx-2"></div>
+                            <div class="flex items-center space-x-2">
+                                <button id="exportAllExcel" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center">
+                                    <i class="fas fa-database mr-2"></i>
+                                    Export All Excel
+                                </button>
+                                <button id="exportAllPdf" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center">
+                                    <i class="fas fa-database mr-2"></i>
+                                    Export All PDF
+                                </button>
+                            </div>
+                            <div class="border-l border-gray-300 mx-2"></div>
+                            <div class="relative">
+                                <input type="text" id="itemSearch" 
+                                       class="w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                       placeholder="Search items...">
+                                <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                            </div>
+                            <select id="editCategorySelect" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Select a category</option>
+                            </select>
+                            <button id="editToggle" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                Edit
+                            </button>
+                            <button id="saveChanges" class="hidden px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <div class="table-scroll">
+                            <table id="itemsTable" class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50 sticky-header">
+                                    <!-- Will be populated dynamically -->
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- Will be populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Category Modal -->
+    <div id="createCategoryModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-[800px] shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Create New Category</h3>
+                <button id="closeCategoryModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="createCategoryForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
+                    <input type="text" id="newCategoryName" class="w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Columns</label>
+                    <div class="mb-4">
+                        <input type="text" id="headerSearch" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                               placeholder="Search headers...">
+                    </div>
+                    <div class="border rounded-md p-4 max-h-[400px] overflow-y-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2">Include</th>
+                                    <th class="px-4 py-2 text-left">Column Name</th>
+                                    <th class="px-4 py-2 text-left">Key</th>
+                                    <th class="px-4 py-2 text-left">Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="columnSelectionBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                        <!-- Add Custom Column Section -->
+                        <div class="mt-4 p-4 border-t">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Add Custom Column</h4>
+                            <div class="flex space-x-4">
+                                <div class="flex-1">
+                                    <input type="text" id="customColumnHeader" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                                           placeholder="Column Name (e.g., WEIGHT)">
+                                </div>
+                                <div class="flex-1">
+                                    <input type="text" id="customColumnKey" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md" 
+                                           placeholder="Key (e.g., weight)">
+                                </div>
+                                <button type="button" id="addCustomColumn" 
+                                        class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                                    Add Column
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancelCategory" class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Create Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="files/js/add-items.js"></script>
+</body>
+</html> 

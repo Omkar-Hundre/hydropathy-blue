@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Setup - Cosem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .table-container {
+            overflow-x: auto;
+            max-width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        .table-wrapper {
+            min-width: 100%;
+            overflow-x: auto;
+        }
+        .suggestion-item {
+            transition: background-color 0.2s;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        td {
+            position: relative;
+        }
+
+        td .suggestion-container {
+            position: absolute;
+            z-index: 100;
+            width: 100%;
+            left: 0;
+            top: 100%;
+        }
+
+        /* Quick search suggestions positioning */
+        .table-cell-container {
+            position: relative;
+        }
+
+        .quick-search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 1050;  /* Higher than modal */
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen p-6">
+        <!-- Project Info Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6 border border-gray-200">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h1 class="text-2xl font-semibold text-gray-800">Project Details</h1>
+                    <p class="text-sm text-gray-500 mt-1">Project information and configuration</p>
+                </div>
+                <span id="projectStatus" class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                    Draft
+                </span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                <div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Project ID</p>
+                        <p id="projectId" class="font-medium text-gray-900"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Project Name</p>
+                        <p id="projectName" class="font-medium text-gray-900"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Client Name</p>
+                        <p id="clientName" class="font-medium text-gray-900"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Start Date</p>
+                        <p id="startDate" class="font-medium text-gray-900"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">End Date</p>
+                        <p id="endDate" class="font-medium text-gray-900"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Project Type</p>
+                        <p id="projectType" class="font-medium text-gray-900"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Client Contact</p>
+                        <p id="clientContact" class="font-medium text-gray-900"></p>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-600 mb-1">Priority Level</p>
+                        <p id="priorityLevel" class="font-medium text-gray-900"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Project Description Section -->
+            <div class="mt-6 grid grid-cols-1 gap-6">
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <p class="text-sm text-gray-600 mb-1">Project Description</p>
+                    <p id="projectDescription" class="font-medium text-gray-900 whitespace-pre-wrap"></p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <p class="text-sm text-gray-600 mb-1">Technical Requirements</p>
+                    <p id="technicalRequirements" class="font-medium text-gray-900 whitespace-pre-wrap"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-4">
+                    <select id="tableType" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">Select Table Type</option>
+                        <!-- Will be populated dynamically -->
+                    </select>
+                    <button id="createNewTable" class="px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                        <i class="fas fa-plus mr-2"></i>
+                        New Table Type
+                    </button>
+                </div>
+                <div>
+                    <button id="manageColumns" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                        Manage Columns
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section Details -->
+            <div class="mb-6 grid grid-cols-2 gap-4">
+                <div>
+                    <label for="sectionName" class="block text-sm font-medium text-gray-700 mb-1">Section/Table Name</label>
+                    <input type="text" 
+                           id="sectionName" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                           placeholder="Enter section name">
+                </div>
+                <div>
+                    <label for="sectionQuantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                    <input type="number" 
+                           id="sectionQuantity" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                           value="1"
+                           min="1">
+                </div>
+            </div>
+
+            <!-- Dynamic Table -->
+            <div id="tableContainer" class="hidden">
+                <div class="overflow-x-auto">
+                    <table class="mb-20 min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr id="tableHeaders">
+                                <!-- Will be populated dynamically -->
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- Will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 flex justify-between">
+                    <button id="addRow" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        <i class="fas fa-plus mr-2"></i>
+                        Add Row
+                    </button>
+                    <button id="saveTable" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        <i class="fas fa-save mr-2"></i>
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create New Table Modal -->
+    <div id="createTableModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-[800px] shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Create New Table Type</h3>
+                <button id="closeTableModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="createTableForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Table Name</label>
+                    <input type="text" id="newTableName" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                           placeholder="Enter table name (e.g., Hydraulic-System)"
+                           required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Columns</label>
+                    <div class="mb-4">
+                        <input type="text" id="columnSearch" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                               placeholder="Search columns...">
+                    </div>
+                    <div class="border rounded-md p-4 max-h-[400px] overflow-y-auto">
+                        <div id="columnSelection" class="space-y-2">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+                    <div class="mt-4 p-4 border-t">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Add Custom Column</h4>
+                        <div class="flex space-x-4">
+                            <input type="text" id="customColumnHeader" 
+                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                                   placeholder="Column Name (e.g., WEIGHT)">
+                            <input type="text" id="customColumnKey" 
+                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                                   placeholder="Key (e.g., weight)">
+                            <button type="button" id="addCustomColumn" 
+                                    class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                                Add Column
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancelTableCreate" 
+                            class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Create Table
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Column Management Modal -->
+    <div id="columnModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-[800px] shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Manage Columns</h3>
+                <button id="closeColumnModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-6">
+                <!-- Available Columns -->
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Available Columns</h4>
+                    <!-- Search Box -->
+                    <div class="mb-4">
+                        <div class="relative">
+                            <input type="text" 
+                                   id="columnSearchInput"
+                                   placeholder="Search columns..."
+                                   class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div id="availableColumns" class="grid grid-cols-2 gap-4 max-h-[300px] overflow-y-auto">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Add Custom Column -->
+                <div class="border-t pt-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Add Custom Column</h4>
+                    <div class="flex space-x-4">
+                        <input type="text" id="newColumnName" 
+                               placeholder="Column Name"
+                               class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="text" id="newColumnKey" 
+                               placeholder="Column Key (lowercase, no spaces)"
+                               class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button id="addCustomColumn" 
+                                class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                            Add Column
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-4 pt-4 border-t">
+                    <button id="cancelColumnManage" 
+                            class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                        Cancel
+                    </button>
+                    <button id="saveColumnChanges" 
+                            class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results Modal -->
+    <div id="searchModal" class="hidden fixed bottom-4 right-4 w-96 bg-white rounded-lg shadow-2xl border border-gray-200 z-[1000]">
+        <div class="flex justify-between items-center p-4 border-b">
+            <h3 class="text-lg font-semibold text-gray-800">
+                <i class="fas fa-book text-indigo-600 mr-2"></i>
+                Item Catalog
+            </h3>
+            <button id="closeSearchModal" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="text-sm text-gray-500 px-4 pt-2">
+            Search or browse all available items across categories
+        </div>
+        <div class="p-4">
+            <div class="relative">
+                <input type="text" 
+                       id="modalSearchInput" 
+                       class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                       placeholder="Search items...">
+                <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+            </div>
+        </div>
+        <div id="searchResults" class="p-4 max-h-96 overflow-y-auto">
+            <!-- Categories will be dynamically added here -->
+        </div>
+    </div>
+
+    <script src="files/js/project-setup.js"></script>
+    <script>
+        // Error handling
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.error('Error: ' + msg + '\nURL: ' + url + '\nLine: ' + lineNo + '\nColumn: ' + columnNo + '\nError: ' + error);
+            return false;
+        };
+    </script>
+    <style>
+        #tableBody td input {
+            width: 100%;
+            min-width: 120px;
+            padding: 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+        }
+        #tableBody td input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Search suggestion styles */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .suggestion-item {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f9fafb;
+        }
+
+        /* Search modal styles */
+        .category-section {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            background-color: #f9fafb;
+        }
+
+        .category-header {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            background-color: #e5e7eb;
+            border-radius: 0.25rem;
+        }
+
+        .item-list {
+            padding-left: 1rem;
+        }
+
+        .item-entry {
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .item-entry:hover {
+            background-color: #e5e7eb;
+        }
+    </style>
+</body>
+</html> 

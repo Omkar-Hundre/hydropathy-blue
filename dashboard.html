@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Hydraulics Quotation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+            width: 64px;
+        }
+        .sidebar:hover {
+            width: 256px;
+        }
+        .sidebar .nav-text {
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .sidebar:hover .nav-text {
+            opacity: 1;
+        }
+        .nav-item {
+            width: 100%;
+            white-space: nowrap;
+        }
+        .icon-container {
+            min-width: 40px;
+            width: 40px;
+            height: 40px;
+        }
+        .sidebar i {
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-gradient-to-b from-indigo-900 to-indigo-800 text-white py-6 flex flex-col fixed h-screen z-50 overflow-hidden shadow-xl">
+            <div class="px-4 mb-8 flex items-center">
+                <i class="fas fa-tint text-2xl text-blue-400"></i>
+                <span class="nav-text ml-3 text-xl font-bold">Cosem</span>
+            </div>
+            <nav class="flex-1">
+                <ul class="space-y-2 px-2">
+                    <li>
+                        <a href="dashboard.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-home text-blue-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#projects" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-project-diagram text-green-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Projects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="new-project.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-plus text-yellow-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">New Project</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="add-items.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-boxes text-purple-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Add Items</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="price-list.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-tags text-pink-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Price List</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="px-2 mt-auto">
+                <button onclick="logout()" class="nav-item flex items-center px-2 py-2 text-red-300 hover:bg-red-900 hover:text-red-100 rounded-lg transition-colors group">
+                    <div class="icon-container flex items-center justify-center bg-red-900/50 rounded-lg group-hover:bg-red-800">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                    <span class="nav-text ml-3">Logout</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-16">
+            <!-- Top Navigation Bar -->
+            <div class="bg-white shadow-md p-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-xl font-semibold text-gray-800">Dashboard</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-600">Welcome, <span id="userName" class="font-semibold"></span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Quick Stats Cards -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">Total Projects</h3>
+                            <i class="fas fa-project-diagram text-indigo-500 text-2xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-700 mt-4">12</p>
+                        <p class="text-sm text-gray-500 mt-2">Active projects</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">Recent Quotes</h3>
+                            <i class="fas fa-file-invoice-dollar text-green-500 text-2xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-700 mt-4">5</p>
+                        <p class="text-sm text-gray-500 mt-2">Last 7 days</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">Total Items</h3>
+                            <i class="fas fa-boxes text-purple-500 text-2xl"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-700 mt-4">156</p>
+                        <p class="text-sm text-gray-500 mt-2">In catalog</p>
+                    </div>
+                </div>
+
+                <!-- Recent Projects Table -->
+                <div class="mt-8 bg-white rounded-lg shadow-md">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800">Recent Projects</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">Hydraulic Pump System</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">ABC Industries</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-20</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">Valve Assembly</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">XYZ Corp</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">Pending</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-03-19</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is authenticated
+        if (!localStorage.getItem('isAuthenticated')) {
+            window.location.href = 'index.html';
+        }
+
+        // Display user name
+        document.getElementById('userName').textContent = localStorage.getItem('userId');
+
+        function logout() {
+            localStorage.removeItem('isAuthenticated');
+            localStorage.removeItem('userId');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html> 

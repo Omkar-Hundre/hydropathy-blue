@@ -1,0 +1,89 @@
+[
+  {
+    "id": "WY2F31BC",
+    "name": "Bhuvan",
+    "clientName": "Omkar",
+    "clientContact": "8458458458",
+    "startDate": "2025-03-10",
+    "endDate": "2025-03-21",
+    "projectType": "power_pack",
+    "priorityLevel": "urgent",
+    "description": "",
+    "technicalRequirements": "",
+    "status": "draft",
+    "createdAt": "2025-03-10T03:24:56.278Z",
+    "files": [
+      "complete_database.pdf"
+    ],
+    "tables": {
+      "Cylinder": {
+        "columns": {
+          "SL.NO.": "sl_no_",
+          "DESCRIPTION": "description",
+          "L": "l",
+          "D": "d",
+          "STROKE": "stroke",
+          "Diameter": "diameter",
+          "Inner-Diameter": "inner_diameter",
+          "Length/Thickness": "length_thickness",
+          "WEIGH": "weigh",
+          "RS/KG": "rs_kg",
+          "RATE": "rate",
+          "M/C": "m_c",
+          "Drill/Weld": "drill_weld",
+          "GR/HO": "gr_ho",
+          "HC PL": "hc_pl",
+          "Quantity": "quantity",
+          "Total": "total"
+        },
+        "sections": []
+      },
+      "Power-Pack": {
+        "columns": {
+          "SL.NO.": "sl_no_",
+          "DESCRIPTION": "description",
+          "MODEL NUMBER": "model_number",
+          "MAKE": "make",
+          "RATE": "rate",
+          "Quantity": "quantity",
+          "Total": "total"
+        },
+        "sections": []
+      },
+      "Structure": {
+        "columns": {
+          "SL.NO.": "sl_no_",
+          "DESCRIPTION": "description",
+          "Length": "length",
+          "Breadth": "breadth",
+          "Length/Thickness": "length_thickness",
+          "Quantity": "quantity",
+          "WEIGH": "weigh",
+          "RS/KG": "rs_kg",
+          "RATE": "rate",
+          "M/C": "m_c",
+          "Drill/Weld": "drill_weld",
+          "TR": "tr",
+          "Total": "total"
+        },
+        "sections": []
+      }
+    },
+    "lastModified": "2025-03-10T03:25:43.673Z"
+  },
+  {
+    "id": "N0RZ2AWK",
+    "name": "Bhuv",
+    "clientName": "Shreyas",
+    "clientContact": "8625807046",
+    "startDate": "2025-03-10",
+    "endDate": "2025-03-30",
+    "projectType": "",
+    "priorityLevel": "normal",
+    "description": "",
+    "technicalRequirements": "",
+    "status": "draft",
+    "createdAt": "2025-03-10T10:16:34.909Z",
+    "files": []
+  }
+]

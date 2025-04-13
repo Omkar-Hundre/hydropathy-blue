@@ -1,0 +1,46 @@
+{
+  "Cylinder": {
+    "SL.NO.": "sl_no_",
+    "DESCRIPTION": "description",
+    "L": "l",
+    "D": "d",
+    "STROKE": "stroke",
+    "Diameter": "diameter",
+    "Inner-Diameter": "inner_diameter",
+    "Length/Thickness": "length_thickness",
+    "WEIGH": "weigh",
+    "RS/KG": "rs_kg",
+    "RATE": "rate",
+    "M/C": "m_c",
+    "Drill/Weld": "drill_weld",
+    "GR/HO": "gr_ho",
+    "HC PL": "hc_pl",
+    "OTH": "oth",
+    "Quantity": "quantity",
+    "Total": "total"
+  },
+  "Power-Pack": {
+    "SL.NO.": "sl_no_",
+    "DESCRIPTION": "description",
+    "MODEL NUMBER": "model_number",
+    "MAKE": "make",
+    "RATE": "rate",
+    "Quantity": "quantity",
+    "Total": "total"
+  },
+  "Structure": {
+    "SL.NO.": "sl_no_",
+    "DESCRIPTION": "description",
+    "Length": "length",
+    "Breadth": "breadth",
+    "Length/Thickness": "length_thickness",
+    "Quantity": "quantity",
+    "WEIGH": "weigh",
+    "RS/KG": "rs_kg",
+    "RATE": "rate",
+    "M/C": "m_c",
+    "Drill/Weld": "drill_weld",
+    "TR": "tr",
+    "Total": "total"
+  }
+}

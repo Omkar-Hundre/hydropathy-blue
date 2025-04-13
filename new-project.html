@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Cosem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Sidebar styles */
+        .sidebar {
+            transition: all 0.3s ease-in-out;
+            width: 64px;
+            position: fixed;
+            height: 100vh;
+            z-index: 50;
+        }
+        .sidebar:hover {
+            width: 256px;
+        }
+        .sidebar .nav-text {
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .sidebar:hover .nav-text {
+            opacity: 1;
+        }
+        .nav-item {
+            width: 100%;
+            white-space: nowrap;
+        }
+        .icon-container {
+            min-width: 40px;
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Main content layout */
+        .main-content {
+            margin-left: 64px;
+            min-height: 100vh;
+            width: calc(100vw - 64px);
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <div class="sidebar bg-gradient-to-b from-indigo-900 to-indigo-800 text-white py-6 flex flex-col fixed h-screen z-50 overflow-hidden shadow-xl">
+            <div class="px-4 mb-8 flex items-center">
+                <i class="fas fa-tint text-2xl text-blue-400"></i>
+                <span class="nav-text ml-3 text-xl font-bold">Cosem</span>
+            </div>
+            <nav class="flex-1">
+                <ul class="space-y-2 px-2">
+                    <li>
+                        <a href="dashboard.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-home text-blue-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#projects" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-project-diagram text-green-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Projects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="new-project.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-plus text-yellow-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">New Project</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="add-items.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-boxes text-purple-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Add Items</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="price-list.html" class="nav-item flex items-center px-2 py-2 rounded-lg hover:bg-indigo-700 transition-colors group">
+                            <div class="icon-container flex items-center justify-center bg-indigo-700 rounded-lg group-hover:bg-indigo-600">
+                                <i class="fas fa-tags text-pink-400"></i>
+                            </div>
+                            <span class="nav-text ml-3">Price List</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="px-2 mt-auto">
+                <button onclick="logout()" class="nav-item flex items-center px-2 py-2 text-red-300 hover:bg-red-900 hover:text-red-100 rounded-lg transition-colors group">
+                    <div class="icon-container flex items-center justify-center bg-red-900/50 rounded-lg group-hover:bg-red-800">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                    <span class="nav-text ml-3">Logout</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation Bar -->
+            <div class="bg-white shadow-md sticky top-0 z-20">
+                <div class="max-w-full mx-auto px-6 py-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-4">
+                            <h1 class="text-xl font-semibold text-gray-800">
+                                <i class="fas fa-project-diagram text-indigo-600 mr-2"></i>
+                                Projects
+                            </h1>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <button id="newProjectBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center">
+                                <i class="fas fa-plus mr-2"></i>
+                                New Project
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6">
+                <!-- Draft Projects Section -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Draft Projects</h2>
+                    
+                    <!-- Empty State -->
+                    <div id="emptyState" class="text-center py-12">
+                        <div class="mb-4">
+                            <i class="fas fa-folder-open text-gray-400 text-5xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-600 mb-2">No Draft Projects</h3>
+                        <p class="text-gray-500">Click the "New Project" button to create your first project</p>
+                    </div>
+
+                    <!-- Projects Grid (hidden initially) -->
+                    <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                        <!-- Projects will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Project Modal -->
+    <div id="newProjectModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-10 mx-auto p-5 border w-[800px] shadow-lg rounded-md bg-white mb-10">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Create New Project</h3>
+                <button id="closeProjectModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="newProjectForm" class="space-y-6">
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Project ID</label>
+                        <input type="text" id="projectId" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" 
+                               readonly>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Project Name *</label>
+                        <input type="text" id="projectName" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                               required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Client Name *</label>
+                        <input type="text" id="clientName" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                               required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Client Contact</label>
+                        <input type="tel" id="clientContact" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                               pattern="[0-9]{10}">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Start Date *</label>
+                        <input type="date" id="startDate" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                               required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Expected End Date *</label>
+                        <input type="date" id="endDate" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                               required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Project Type</label>
+                        <select id="projectType" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Select Type</option>
+                            <option value="hydraulic_system">Hydraulic System</option>
+                            <option value="power_pack">Power Pack</option>
+                            <option value="cylinder_manufacturing">Cylinder Manufacturing</option>
+                            <option value="maintenance">Maintenance & Service</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Priority Level</label>
+                        <select id="priorityLevel" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="normal">Normal</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Project Description</label>
+                    <textarea id="projectDescription" rows="4" 
+                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Technical Requirements</label>
+                    <textarea id="technicalRequirements" rows="3" 
+                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              placeholder="Operating pressure, flow rate, cylinder specifications, etc."></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Project Files</label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                        <div class="space-y-1 text-center">
+                            <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-3"></i>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="projectFiles" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                    <span>Upload files</span>
+                                    <input id="projectFiles" type="file" class="sr-only" multiple>
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500">PDF, CAD, Images up to 10MB each</p>
+                        </div>
+                    </div>
+                    <div id="fileList" class="mt-2 space-y-2"></div>
+                </div>
+                
+                <div class="flex justify-end space-x-4 pt-4">
+                    <button type="button" id="cancelProject" 
+                            class="px-4 py-2 text-gray-700 hover:text-gray-900">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        Next
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="files/js/project-manager.js"></script>
+    <script>
+        // Check if user is authenticated
+        if (!localStorage.getItem('isAuthenticated')) {
+            window.location.href = 'index.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('isAuthenticated');
+            localStorage.removeItem('userId');
+            window.location.href = 'index.html';
+        }
+
+        // Initialize projects
+        document.addEventListener('DOMContentLoaded', () => {
+            const newProjectBtn = document.getElementById('newProjectBtn');
+            newProjectBtn.addEventListener('click', () => {
+                // This will be implemented in the next step
+                console.log('New Project button clicked');
+            });
+        });
+    </script>
+</body>
+</html> 
